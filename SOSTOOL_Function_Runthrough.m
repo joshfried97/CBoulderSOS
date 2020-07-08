@@ -3,23 +3,27 @@ clear all
 close all
 clc
 
-syms x y;
+% Following (https://yalmip.github.io/tutorial/sumofsquaresprogramming/)
+x = sdpvar(1,1); % defines Yalmips symbolic decision vars
+y = sdpvar(1,1);
 
-% Construct p(x,y)
-p = 2*x^2 + 3*x*y + 4*y^4;
+%p = (1 + x)^4 + (1 - y)^2; % polynomial to decompose
+p = 4*x^4 + 4*(x^3)*y - 7*(x^2)*(y^2) - 2*x*(y^3) + 10*y^4; % Testing poly from Stanford slides
 
-% Differentiate p wrt x
-dpdx = diff(p,x);
+% Calculates and outputs decomp
+F = sos(p);
+solvesos(F);
+h = sosd(F);
+sdisplay(h)
 
-% Initiate SOSTOOL function
-Program1 = sosprogram([x;y]);
+% Verifies whether decomp was successful 
+% clean() is used to zero any coeffs < 1e-6
+clean(p-h'*h,1e-6)
 
-% Declaring polynomial var
-[Program1, v] = sospolyvar(Program1, [x^2; x*y; y^2]);
-v
+% Doing same decomp but with p = v'Qv format
+F = sos(p);
+[sol,v,Q] = solvesos(F);
+sdisplay(v{1})
+sdisplay(Q{1})
+clean(p-v{1}'*Q{1}*v{1},1e-6)
 
-% Creating vector of monomials
-vec = monomials([x;y], [1 2 3]);
-
-% Declaring an SOS var
-%[Program1, p] = sossosvar(Program1, [x;y])
