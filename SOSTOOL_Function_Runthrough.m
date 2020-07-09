@@ -7,23 +7,27 @@ clc
 x = sdpvar(1,1); % defines Yalmips symbolic decision vars
 y = sdpvar(1,1);
 
-%p = (1 + x)^4 + (1 - y)^2; % polynomial to decompose
-p = 4*x^4 + 4*(x^3)*y - 7*(x^2)*(y^2) - 2*x*(y^3) + 10*y^4; % Testing poly from Stanford slides
+% Stanford slides, slide 6 example
+p1 = 4*x^4 + 4*(x^3)*y - 7*(x^2)*(y^2) - 2*x*(y^3) + 10*y^4;
 
 % Calculates and outputs decomp
-F = sos(p);
+F = sos(p1);
 solvesos(F);
-h = sosd(F);
-sdisplay(h)
+h1 = sosd(F);
 
-% Verifies whether decomp was successful 
-% clean() is used to zero any coeffs < 1e-6
-clean(p-h'*h,1e-6)
+% Stanford slides, slide 10 example
+p2 = 2*x^4 + 2*(x^3)*y - (x^2)*(y^2) + 5*y^4;
 
-% Doing same decomp but with p = v'Qv format
-F = sos(p);
-[sol,v,Q] = solvesos(F);
-sdisplay(v{1})
-sdisplay(Q{1})
-clean(p-v{1}'*Q{1}*v{1},1e-6)
+% Calculates and outputs decomp
+F = sos(p2);
+solvesos(F);
+h2 = sosd(F);
+
+fprintf("Calculation of p - h'*h to determine accuracy of SOS decomp:\n\n")
+
+fprintf("Stanford slides; slide 6 example:\n")
+p1-h1'*h1
+fprintf("\nStanford slides; slide 10 example:\n")
+p2-h2'*h2
+
 
