@@ -41,5 +41,3 @@ fprintf("\nStanford slides; slide 10 example:\n")
 p2-h2'*h2
 fprintf("\nStanford slides; slide 21 example:\n")
 p3-h3'*h3
-
-

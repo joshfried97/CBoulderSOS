@@ -4,7 +4,7 @@ clc
 clear all
 close all 
 
-% Following methodology using https://matlabexamples.wordpress.com/tag/lyapunov-stability/
+%% Following methodology using https://matlabexamples.wordpress.com/tag/lyapunov-stability/
 % as a reference.
 
 % Given dx/dt = -y - (3/2)x^2 - (1/2)x^3
@@ -14,9 +14,12 @@ close all
 A = [0 3 ; -1 -1];
 Q = eye(size(A));
 
-X = lyap(A, Q)
+X = lyap(A, Q);
 
 % Find eigenvalues of output as this will determine stability
-k = eig(X)
+k = eig(X);
+
+%% Deriving Lyapunov function for above system
+% The problem we're trying to solve!!
 
 
