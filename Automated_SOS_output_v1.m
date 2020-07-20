@@ -34,8 +34,11 @@ for i = 1:numExp
     symsExpression = symsExpression + tempExp^2;
 end
 
-% Printing expression 
+% Printing expression
+fprintf("Accurate result:\n")
 symsExpression
+fprintf("\n2 d.p result:\n")
+vpa(symsExpression,2)
 
 % 3D plotting on expression
 fsurf(symsExpression)
