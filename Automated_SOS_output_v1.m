@@ -12,6 +12,9 @@ y = sdpvar(1,1);
 % Define polynomial p (using Stanford slide 6 example)
 p = 4*x^4 + 4*(x^3)*y - 7*(x^2)*(y^2) - 2*x*(y^3) + 10*y^4;
 
+% Turning pre and post-processing on
+options = sdpsettings('sos.newton',1,'sos.congruence',1,'sos.numblkdg',1e-6);
+
 % Create SOS model and run it
 F = sos(p);
 solvesos(F);
@@ -23,8 +26,16 @@ syms y;
 
 % Determines how many expressions need to be converted
 numExp = size(yalmipOutput, 1);
+symsExpression = 0;
 
 % Converts and stores new sym expressions in new array
 for i = 1:numExp
-    symsArray(i) = str2sym(yalmipOutput{i})
+    tempExp = str2sym(yalmipOutput{i});
+    symsExpression = symsExpression + tempExp^2;
 end
+
+% Printing expression 
+symsExpression
+
+% 3D plotting on expression
+fsurf(symsExpression)
