@@ -8,6 +8,12 @@ close all
 % Ask user for number of input var
 var = input('Enter number of variables (2 or 3) in p: ');
 
+% Ensuring correct input set
+while (var ~= 2) && (var ~= 3)
+    disp('Please use valid input')
+    var = input('Enter number of variables (2 or 3) in p: ');
+end;
+
 % Define YALMIP symbols based on var
 if var == 2
     x = sdpvar(1,1);
