@@ -5,12 +5,22 @@ clc
 clear all
 close all
 
-% Define YALMIP symbols
-x = sdpvar(1,1);
-y = sdpvar(1,1);
+% Ask user for number of input var
+var = input('Enter number of variables (2 or 3) in p: ');
 
-% Define polynomial p (using Stanford slide 6 example)
-p = 4*x^4 + 4*(x^3)*y - 7*(x^2)*(y^2) - 2*x*(y^3) + 10*y^4;
+% Define YALMIP symbols based on var
+if var == 2
+    x = sdpvar(1,1);
+    y = sdpvar(1,1);
+elseif var == 3
+    x = sdpvar(1,1);
+    y = sdpvar(1,1);
+    z = sdpvar(1,1);
+end
+
+% User inputs p
+p = input('Enter p: ')
+%p = 4*x^4 + 4*(x^3)*y - 7*(x^2)*(y^2) - 2*x*(y^3) + 10*y^4;
 
 % Turning pre and post-processing on
 options = sdpsettings('sos.newton',1,'sos.congruence',1,'sos.numblkdg',1e-6);
@@ -20,16 +30,20 @@ F = sos(p);
 solvesos(F);
 yalmipOutput = sdisplay(sosd(F));
 
-% Create syms equivalent to YALMIP symbols
-syms x;
-syms y;
+% Create syms equivalent to YALMIP symbols based on var
+if var == 2
+    syms x;
+    syms y;
+elseif var == 3
+    syms x;
+    syms y;
+    syms z;
+end
 
-% Determines how many expressions need to be converted
-numExp = size(yalmipOutput, 1);
 symsExpression = 0;
 
 % Converts and stores new sym expressions in new array
-for i = 1:numExp
+for i = 1:size(yalmipOutput, 1)
     tempExp = str2sym(yalmipOutput{i});
     symsExpression = symsExpression + tempExp^2;
 end
@@ -40,5 +54,11 @@ symsExpression
 fprintf("\n2 d.p result:\n")
 vpa(symsExpression,2)
 
-% 3D plotting on expression
-fsurf(symsExpression)
+% 3D plotting on expression only if var = 2
+if var == 2
+    fsurf(symsExpression)
+    title("SOS Plot")
+    xlabel("x")
+    ylabel("y")
+    zlabel("z")
+end
