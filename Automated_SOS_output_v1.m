@@ -26,7 +26,8 @@ end
 
 % User inputs p
 p = input('Enter p: ')
-%p = 4*x^4 + 4*(x^3)*y - 7*(x^2)*(y^2) - 2*x*(y^3) + 10*y^4;
+% 4*x^4 + 4*(x^3)*y - 7*(x^2)*(y^2) - 2*x*(y^3) + 10*y^4;
+% 4.5819*x^2 - 1.5786*x*y + 1.7834*(y^2) - 0.12739*(x^3) + 2.5189*(x^2)*y - 0.34069*x*(y^2) + 0.61188*(y^3) + 0.47537*(x^4) - 0.052424*(x^3)*y + 0.44289*(x^2)*(y^2) + 0.0000018868*x*(y^3) + 0.090723*y^4
 
 % Turning pre and post-processing on
 options = sdpsettings('sos.newton',1,'sos.congruence',1,'sos.numblkdg',1e-6);
@@ -58,9 +59,10 @@ end
 fprintf("Accurate result:\n")
 symsExpression
 fprintf("\n2 d.p result:\n")
-vpa(symsExpression,2)
+symsExpression2dp = vpa(symsExpression,2)
 
 % 3D plotting on expression only if var = 2
+figure
 if var == 2
     fsurf(symsExpression)
     title("SOS Plot")
@@ -68,3 +70,20 @@ if var == 2
     ylabel("y")
     zlabel("z")
 end
+
+% Calculate the gradient of sos
+gradSos = gradient(symsExpression2dp);
+
+fprintf("\nGrad result:\n")
+gradSos
+
+% 3D plotting of grad only if var = 2
+figure
+if var == 2
+    fsurf(gradSos)
+    title("Grad(SOS) Plot")
+    xlabel("x")
+    ylabel("y")
+    zlabel("z")
+end
+
