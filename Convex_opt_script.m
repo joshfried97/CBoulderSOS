@@ -50,21 +50,11 @@ clear all
 % ylabel('J')
 % plot(upperTest,JUpper, 'r*')
 
-%% Trying Multidimensional Local Min Search (NA pg 28)
-syms x;
-syms y;
+%% Trying Multidimensional Local Min Search Using MATLAB's fminsearch
+% Using https://uk.mathworks.com/help/optim/ug/banana-function-minimization.html
+fun = @(x)(4*x(1)^4 + 4*(x(1)^3)*x(2) - 7*(x(1)^2)*(x(2)^2) - 2*x(1)*(x(2)^3) + 10*x(2)^4);
+options = optimset('plotFcns','optimplotfval','TolX',1e-6);
+x0 = [4,5];
+[x,fval,eflag,output] = fminsearch(fun,x0,options);
+title 'Rosenbrock solution via fminsearch'
 
-J = 4*x^4 + 4*(x^3)*y - 7*(x^2)*(y^2) - 2*x*(y^3) + 10*y^4;
-
-% Setting threshold (TOL)
-TOL = 1e-5;
-
-% Setting upper and lower bounds of search
-upperX = 5;
-lowerX = -5;
-
-% Define recip Golden ratio
-tau = 2/(1+sqrt(5));
-
-% Search loop
-itrCnt = 0;
