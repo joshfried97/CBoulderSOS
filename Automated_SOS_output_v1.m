@@ -35,7 +35,13 @@ options = sdpsettings('sos.newton',1,'sos.congruence',1,'sos.numblkdg',1e-6);
 % Create SOS model and run it
 F = sos(p);
 solvesos(F);
-yalmipOutput = sdisplay(sosd(F));
+
+if isempty(sosd(F))
+    fprintf("\nNo SOS exists, stopping script run.\n");
+    return;
+else
+    yalmipOutput = sdisplay(sosd(F));
+end
 
 % Create syms equivalent to YALMIP symbols based on var
 if var == 2
@@ -72,17 +78,19 @@ x0 = randi(5,1,2) % Starting coords of search
 [x,fval,eflag,output] = fminsearch(fun,x0,options)
 title 'Rosenbrock solution via fminsearch'
 
-% Plot Results
-figure
-newfun = @(varargin)fun([varargin{:}]); %This conversion ensures we can use fsurf to plot it
-fsurf(newfun)
-hold on
-title('Cost Function with start point and solution')
-xlabel("x")
-ylabel("y")
-zlabel("Cost function")
-plot3(x0(1),x0(2),fun([x0(1),x0(2)]),'ko','MarkerSize',15,'LineWidth',2);
-text(x0(1),x0(2),fun([x0(1),x0(2)]),'   Start','Color',[0 0 0]);
-plot3(x(1),x(2),fun([x(1),x(2)]),'ko','MarkerSize',15,'LineWidth',2);
-text(x(1),x(2),fun([x(1),x(2)]),'   Solution','Color',[0 0 0]);
-drawnow
+% Plot results if there are only 2 inputs
+if var == 2
+    figure
+    newfun = @(varargin)fun([varargin{:}]); %This conversion ensures we can use fsurf to plot it
+    fsurf(newfun)
+    hold on
+    title('Cost Function with start point and solution')
+    xlabel("x")
+    ylabel("y")
+    zlabel("Cost function")
+    plot3(x0(1),x0(2),fun([x0(1),x0(2)]),'ko','MarkerSize',15,'LineWidth',2);
+    text(x0(1),x0(2),fun([x0(1),x0(2)]),'   Start','Color',[0 0 0]);
+    plot3(x(1),x(2),fun([x(1),x(2)]),'ko','MarkerSize',15,'LineWidth',2);
+    text(x(1),x(2),fun([x(1),x(2)]),'   Solution','Color',[0 0 0]);
+    drawnow
+end
