@@ -52,8 +52,8 @@ close all
 %% Trying Multidimensional Local Min Search Using MATLAB's fminsearch
 % Using https://uk.mathworks.com/help/optim/ug/banana-function-minimization.html
 fun = @(x)(4*x(1)^4 + 4*(x(1)^3)*x(2) - 7*(x(1)^2)*(x(2)^2) - 2*x(1)*(x(2)^3) + 10*x(2)^4);
-options = optimset('Display','iter', 'plotFcns','optimplotfval','TolX',1e-3);
-x0 = randi(5,1,2)
+options = optimset('Display','iter', 'plotFcns','optimplotfval','TolX',1e-3); % Setting display options
+x0 = randi(5,1,2) % Starting coords of search
 [x,fval,eflag,output] = fminsearch(fun,x0,options)
 title 'Rosenbrock solution via fminsearch'
 

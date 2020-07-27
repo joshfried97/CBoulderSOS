@@ -41,10 +41,12 @@ yalmipOutput = sdisplay(sosd(F));
 if var == 2
     syms x;
     syms y;
+    vars = {[x,y]};
 elseif var == 3
     syms x;
     syms y;
     syms z;
+    vars = {[x,y,z]};
 end
 
 symsExpression = 0;
@@ -61,29 +63,26 @@ symsExpression
 fprintf("\n2 d.p result:\n")
 symsExpression2dp = vpa(symsExpression,2)
 
-% 3D plotting on expression only if var = 2
+
+%% Trying Multidimensional Local Min Search Using MATLAB's fminsearch
+% Using https://uk.mathworks.com/help/optim/ug/banana-function-minimization.html
+fun = matlabFunction(symsExpression2dp, 'vars', vars) % Converts symbolic function to function handle
+options = optimset('Display','iter', 'plotFcns','optimplotfval','TolX',1e-3); % Setting display options
+x0 = randi(5,1,2) % Starting coords of search
+[x,fval,eflag,output] = fminsearch(fun,x0,options)
+title 'Rosenbrock solution via fminsearch'
+
+% Plot Results
 figure
-if var == 2
-    fsurf(symsExpression)
-    title("SOS Plot")
-    xlabel("x")
-    ylabel("y")
-    zlabel("z")
-end
-
-% Calculate the gradient of sos
-gradSos = gradient(symsExpression2dp);
-
-fprintf("\nGrad result:\n")
-gradSos
-
-% 3D plotting of grad only if var = 2
-figure
-if var == 2
-    fsurf(gradSos)
-    title("Grad(SOS) Plot")
-    xlabel("x")
-    ylabel("y")
-    zlabel("z")
-end
-
+newfun = @(varargin)fun([varargin{:}]); %This conversion ensures we can use fsurf to plot it
+fsurf(newfun)
+hold on
+title('Cost Function with start point and solution')
+xlabel("x")
+ylabel("y")
+zlabel("Cost function")
+plot3(x0(1),x0(2),fun([x0(1),x0(2)]),'ko','MarkerSize',15,'LineWidth',2);
+text(x0(1),x0(2),fun([x0(1),x0(2)]),'   Start','Color',[0 0 0]);
+plot3(x(1),x(2),fun([x(1),x(2)]),'ko','MarkerSize',15,'LineWidth',2);
+text(x(1),x(2),fun([x(1),x(2)]),'   Solution','Color',[0 0 0]);
+drawnow
