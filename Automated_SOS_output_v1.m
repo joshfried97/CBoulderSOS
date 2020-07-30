@@ -33,7 +33,7 @@ p = input('Enter p: ')
 options = sdpsettings('sos.newton',1,'sos.congruence',1,'sos.numblkdg',1e-6);
 
 % Create SOS model and run it
-F = sos(p);
+F = sos(p); 
 solvesos(F);
 
 if isempty(sosd(F))
