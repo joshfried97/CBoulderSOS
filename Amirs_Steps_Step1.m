@@ -12,9 +12,8 @@ y_dot = input('Enter y_dot in terms of x and y: ');
 V = input('Enter V in terms of x and y: ');
 fprintf("\n\n")
 
-gradVXdot = jacobian(V,[x y]);
-gradVXdot(1) = -1*x_dot * gradVXdot(1); 
-gradVXdot(2) = -1*y_dot * gradVXdot(2);
+gradV = jacobian(V,[x y]);
+negGradVXdot = -1*(x_dot * gradV(1) + y_dot * gradV(2));
 
 % Check V is sos
 F = [sos(V)]
@@ -26,7 +25,7 @@ h = sosd(F)
 sdisplay(h)
 
 % Check -V_dot is sos
-F = [sos(gradVXdot)]
+F = [sos(negGradVXdot)]
 
 fprintf("\n*** Checking -V_dot is SOS ***\n")
 solvesos(F)
