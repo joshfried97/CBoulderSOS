@@ -2,7 +2,6 @@
 % Code found: http://control.asu.edu/Classes/MAE598/598Lecture16.pdf
 clear all
 close all
-clc
 
 % Set up YALMIP symbols
 sdpvar x y
@@ -19,7 +18,7 @@ f = [-1*y - 1.5*x^2 - 0.5*x^3 ; 3*x - y];
 F = [Vc(1) == 0];
 
 % This ensures V is positive definite as V >= eps*(x^2 + y^2)
-F = [F;sos(V-0.00001*(x^2 + y^2))];
+F = [F;sos(V-0.1*(x^2 + y^2))];
 
 % Calculates the gradient of the cost function
 gradV = jacobian(V,[x,y]);
@@ -31,5 +30,5 @@ F = [F;sos(-1*gradV*f)];
 solvesos(F,[],[],[Vc]);
 
 % Construct V and display results
-V = replace(V,Vc,value(Vc)); 
+V = replace(V,Vc,value(Vc))
 sdisplay(V)
