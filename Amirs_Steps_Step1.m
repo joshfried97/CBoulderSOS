@@ -4,20 +4,32 @@ clc
 clear all
 close all
 
-sdpvar x y a b c d e
-fun = a*x^4 + b*x^3*y - c*x^2*y^2 - d*x*y^3 + e*y^4
-gradFun = jacobian(fun,[x y]);
-%options = sdpsettings('debug',1);
-%F = [sos(fun), a == 1]
-F = [sos(fun),sos(gradFun), a == 1]
+sdpvar x y
 
-solvesos(F,[],[],[a b c d e])
+% Prompt user for ODEs and V in terms of x and y
+x_dot = input('Enter x_dot in terms of x and y: ');
+y_dot = input('Enter y_dot in terms of x and y: ');
+V = input('Enter V in terms of x and y: ');
+fprintf("\n\n")
 
-value(a)
-value(b)
-value(c)
-value(d)
-value(e)
+gradVXdot = jacobian(V,[x y]);
+gradVXdot(1) = -1*x_dot * gradVXdot(1); 
+gradVXdot(2) = -1*y_dot * gradVXdot(2);
+
+% Check V is sos
+F = [sos(V)]
+
+fprintf("\n*** Checking V is SOS ***\n")
+solvesos(F)
+
+h = sosd(F)
+sdisplay(h)
+
+% Check -V_dot is sos
+F = [sos(gradVXdot)]
+
+fprintf("\n*** Checking -V_dot is SOS ***\n")
+solvesos(F)
 
 h = sosd(F)
 sdisplay(h)
