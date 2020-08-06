@@ -5,21 +5,32 @@ clc
 clear all
 close all
 
+disp("Lyapunov Function Solver Utilising SOS");
+
 % Prompt user for required data
 nVar = input('Enter number of variables in system: ');
 nEqn = input('Enter number of equations in system: ');
+fprintf("\n")
 
 % Set up YALMIP symbols
 x = sdpvar(nVar,1);
 
 % This structure contains each ODE per row
-f = [-1*x(2) - 1.5*x(1)^2 - 0.5*x(1)^3 ; 3*x(1) - x(2)];
+f = [];
+disp("Enter equations with variables as x(1), x(2)..");
+disp("For example: -1*x(2) - 1.5*x(1)^2 - 0.5*x(1)^3");
+for i = 1 : nEqn
+    fprintf("(Eqn #%d) ",i);
+    f = [f;(input('Enter eqn: '))];
+end
+fprintf("\n")
 
 % Generates a polynomial with degree 4
 % V is polynomial
 % Vc stores coefficients of each term
 n = input('Enter degree polynomial to search for: ');
 [V, Vc] = polynomial(x,n);
+fprintf("\n")
 
 % Setting constant term to 0
 F = [Vc(1) == 0];
