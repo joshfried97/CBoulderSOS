@@ -18,7 +18,7 @@ x = sdpvar(nVar,1);
 % This structure contains each ODE per row
 f = [];
 disp("Enter equations with variables as x(1), x(2)..");
-disp("For example: -1*x(2) - 1.5*x(1)^2 - 0.5*x(1)^3");
+disp("For example: -1*x(2) - 1.5*x(1)^2 - 0.5*x(1)^3 and 3*x(1) - x(2)");
 for i = 1 : nEqn
     fprintf("(Eqn #%d) ",i);
     f = [f;(input('Enter eqn: '))];
@@ -49,13 +49,44 @@ F = [F;sos(V-zeta*boundFun^2)];
 gradV = jacobian(V,x);
 
 % Creates sos instance for both V and -V_dot
-F = [F;sos(-1*gradV*f)];
+negGradVfDot = -1*gradV*f;
+F = [F;sos(negGradVfDot)];
 
 % Calculates V s.t V and -V_dot are sos
 fprintf("\n\n")
 solvesos(F,[],[],[Vc]);
 
-% Construct V and display results
-V = replace(V,Vc,value(Vc))
-fprintf("V:\n")
-sdisplay(V)
+% Display V and negGradVfDot
+V = sdisplay(replace(V,Vc,value(Vc)));
+V = V{1}
+negGradVfDot = sdisplay(replace(negGradVfDot,Vc,value(Vc)));
+negGradVfDot = negGradVfDot{1}
+
+% Plot V if it is plottable
+if (nVar <= 2)
+    if (input('Do you want to plot results? (1 - Yes, 0 - No): '))
+        V = replace(V,'*','.*');
+        V = replace(V,'^','.^');
+        V = replace(V,'x(1)','x');
+        V = replace(V,'x(2)','y');
+        V = eval(['@(x,y)' V]);
+        subplot(2,1,1);
+        fsurf(V)
+        title('Proposed Lyapunov Function')
+        xlabel("x")
+        ylabel("y")
+        zlabel("V")
+        
+        negGradVfDot = replace(negGradVfDot,'*','.*');
+        negGradVfDot = replace(negGradVfDot,'^','.^');
+        negGradVfDot = replace(negGradVfDot,'x(1)','x');
+        negGradVfDot = replace(negGradVfDot,'x(2)','y');
+        negGradVfDot = eval(['@(x,y)' negGradVfDot]);
+        subplot(2,1,2);
+        fsurf(negGradVfDot)
+        title('Negative Grad Lyapunov Function Multiplied by F')
+        xlabel("x")
+        ylabel("y")
+        zlabel("-grad(V)f")
+    end
+end
