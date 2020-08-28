@@ -1,14 +1,14 @@
-function Lyp_gui(f,V)
+function Lyp_gui(f,V,nVar,nEqn)
 fprintf("Please re-enter the system questions and V.");
 f
 V
 % Simple GUI demonstration
-x=mpolyfun.singles(2);
+x=mpolyfun.singles(nVar);
 f=[];
-fprintf("(Eqn #1) ");
-f = [f;(input('Enter eqn: '))];
-fprintf("(Eqn #2) ");
-f = [f;(input('Enter eqn: '))];
+for i = 1 : nEqn
+    fprintf("(Eqn #%d) ",i);
+    f = [f;(input('Enter eqn: '))];
+end
 
 V = input('Enter V: ');
 
