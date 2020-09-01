@@ -64,6 +64,12 @@ V = V{1}
 negGradVfDot = sdisplay(replace(negGradVfDot,Vc,value(Vc)));
 negGradVfDot = negGradVfDot{1}
 
+% Utilising Agra toolbox for plotting ROA
+if (input('Do you want to plot ROA? (1 - Yes, 0 - No): '))
+    f = sdisplay(f);
+    Lyp_gui(f,V,nVar,nEqn)
+end
+
 % Plot V if it is plottable
 if (nVar <= 2)
     if (input('Do you want to plot V and -grad(V)f_dot? (1 - Yes, 0 - No): '))
@@ -91,10 +97,4 @@ if (nVar <= 2)
         ylabel("y")
         zlabel("-grad(V)f")
     end
-end
-
-% Utilising Agra toolbox for plotting ROA
-if (input('Do you want to plot ROA? (1 - Yes, 0 - No): '))
-    f = sdisplay(f);
-    Lyp_gui(f,V,nVar,nEqn)
 end
