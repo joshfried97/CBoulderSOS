@@ -7,8 +7,6 @@ close all
 
 disp("Lyapunov Function Solver Utilising SOS");
 
-x = sdpvar(2,1);
-
 % Prompt user for required data
 nVar = input('Enter number of variables in system: ');
 nEqn = input('Enter number of equations in system: ');
@@ -34,32 +32,28 @@ n = input('Enter degree polynomial to search for: ');
 [V, Vc] = polynomial(x,n);
 fprintf("\n")
 
-% Setting constant term to 0
-F = [Vc(1) == 0];
-
 % Generate boundary function for defining positive definiteness
-boundFun = 0;
-for i = 1 : nVar
-    boundFun = boundFun + x(i)^2;
-end
-
-% This ensures V is positive definite
-zeta = input('Enter value for zeta: ');
-F = [F;sos(V-zeta*boundFun^2)];
+boundFun = sum(x.^2);
+zeta = 0.00001;
 
 % Calculates the gradient of the cost function
 gradV = jacobian(V,x);
+negGradVfDot = -1*gradV*f;
 
 % Creates sos instance for both V and -V_dot
-negGradVfDot = -1*gradV*f;
-F = [F;sos(negGradVfDot)];
+F = [sos(V-zeta*boundFun^2);sos(negGradVfDot)];
 
 % Calculates V s.t V and -V_dot are sos
-fprintf("\n\n")
-solvesos(F,[],[],[Vc]);
+solvesos([F],[],[],[Vc]);
+
+% Cleans expression up by removing coefficients < 1e-6
+V = replace(V,Vc,value(Vc));
+V = clean(V, 1e-6);
+negGradVfDot = replace(negGradVfDot,Vc,value(Vc));
+negGradVfDot = clean(negGradVfDot, 1e-6);
 
 % Display V and negGradVfDot
-V = sdisplay(replace(V,Vc,value(Vc)));
+V = sdisplay(V);
 V = V{1}
 negGradVfDot = sdisplay(replace(negGradVfDot,Vc,value(Vc)));
 negGradVfDot = negGradVfDot{1}
