@@ -24,8 +24,14 @@ for i = 1 : nEqn
 end
 fprintf("\n")
 
-% Start searching for a quadratic V
-n = 2;
+% Starting degree of V
+n = input('Enter positive, non-zero starting value for degree of V: ');
+
+% Ensuring valid value for n is entered
+while n <= 0
+    disp("Invalid value for n. Value must be positive and non-zero.")
+    n = input('Enter starting value for degree of V: ');
+end
 
 % MATLAB equivalent of do-while loop
 while 1
@@ -39,14 +45,24 @@ while 1
         disp("")
         disp("**** Infeasible solution -> Searching for higher order V ****")
         disp("")
-        
-        % Increase the degree of V by 2
-        n = n + 2
     else
         % If the solver doesn't return nothing then it's found something
-        % and breaks loop
+        disp("")
+        disp("**** Solver returned expression for V ****")
+        disp("Do you wish to do another run? ")
+        if (input("Recommended if Problem and Solution status show UNKNOWN (1 - Yes, 0 - No):"))
+            % Increase the degree of V by 2
+            n = n + 2;
+            
+            % Run solver
+            fprintf("Searching for V with degree = %d...\n",n);
+            [V,neg_V_dot] = sosFun(f,x,n);
+        end
         break;
     end
+        
+    % Increase the degree of V by 2
+    n = n + 2;
 end
 
 % Utilising Agra toolbox for plotting ROA
