@@ -2,7 +2,7 @@ function Lyp_gui(f,V,nVar,nEqn)
 fprintf("Please re-enter the system questions and V.");
 f
 V
-% Simple GUI demonstration
+
 x=mpolyfun.singles(nVar);
 f=[];
 for i = 1 : nEqn

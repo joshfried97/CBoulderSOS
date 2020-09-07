@@ -50,7 +50,7 @@ while 1
         disp("")
         disp("**** Solver returned expression for V ****")
         disp("Do you wish to do another run? ")
-        if (input("Recommended if Problem and Solution status show UNKNOWN (1 - Yes, 0 - No):"))
+        if (input("Recommended if Problem and Solution status show UNKNOWN (1 - Yes, 0 - No): "))
             % Increase the degree of V by 2
             n = n + 2;
             
@@ -87,7 +87,7 @@ V = replace(V,'x(2)','y');
 V = eval(['@(x,y)' V]);
 subplot(2,1,1);
 fsurf(V)
-title('Proposed Lyapunov Function')
+title('Proposed Lyapunov Function (V)')
 xlabel("x")
 ylabel("y")
 zlabel("V")
@@ -99,10 +99,10 @@ neg_V_dot = replace(neg_V_dot,'x(2)','y');
 neg_V_dot = eval(['@(x,y)' neg_V_dot]);
 subplot(2,1,2);
 fsurf(neg_V_dot)
-title('Negative Grad Lyapunov Function Multiplied by F')
+title('Vdot')
 xlabel("x")
 ylabel("y")
-zlabel("-grad(V)f")
+zlabel("Vdot")
 end
 
 function [V,neg_V_dot] = sosFun(f,x,n)
@@ -138,5 +138,5 @@ neg_V_dot = clean(neg_V_dot, 1e-6);
 V = sdisplay(V);
 V = V{1}
 neg_V_dot = sdisplay(replace(neg_V_dot,Vc,value(Vc)));
-neg_V_dot = neg_V_dot{1}
+neg_V_dot = neg_V_dot{1};
 end
