@@ -65,6 +65,8 @@ limits=[agra.x_lim;agra.y_lim];
 set(handles.space,'XGrid','on','YGrid','on','Box','on','XLim',limits(1,:),'YLim',limits(2,:));
 set(handles.limits,'Data',limits);
 set(handles.V,'Value',1);set(handles.dV,'Value',1);set(handles.ROA,'Value',0);
+xlabel(handles.space, agra.xstring);
+ylabel(handles.space, agra.ystring);
 
 % --- Outputs from this function are returned to the command line.
 function varargout = agrawin_OutputFcn(hObject, eventdata, handles) 

@@ -24,6 +24,8 @@ classdef agragui < handle
         tol=1e-3; % practical zero
         xbox=[];% zero box
         T=50; % simulation time
+        xstring = 'x1'; % label for x axis
+        ystring = 'x2'; % label for y axis
     end
     
     methods
@@ -57,6 +59,8 @@ classdef agragui < handle
         function set_plane(sys,i,j,varargin)
          % Set cross-section plane
              sys.x_i=i;sys.y_i=j;
+             sys.xstring = strcat('x',num2str(i));
+             sys.ystring = strcat('x',num2str(j));
              if nargin>3
                 sys.x_lim=varargin{1};sys.y_lim=varargin{2};
              end
