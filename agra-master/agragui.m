@@ -131,6 +131,18 @@ classdef agragui < handle
          
                [x_1,x_2]=ginput(1);
                [x,y]=traj(sys,x_1,x_2);plot(x,y,'b');
+               
+               %% Added by Josh Fried Sep 20
+               % Add trajectory data to file in same dir
+               endX = 100; % Indicates end of X data
+               endY = 101; % Indicates end of Y data
+               fileID = fopen('trajData.txt','a');
+               fprintf(fileID,'%f\n',x);
+               fprintf(fileID,'%d\n',endX);
+               fprintf(fileID,'%f\n',y);
+               fprintf(fileID,'%d\n',endY);
+               fclose(fileID);
+               
          end
          
          function flag=in_ROA(sys,x0)
