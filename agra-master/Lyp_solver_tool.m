@@ -81,39 +81,6 @@ if (nVar <= 2)
 end
 
 %% Function Declarations
-function plotFun(V, neg_V_dot)
-[x,y,trajNum] = trajFinder();
-V = replace(V,'*','.*');
-V = replace(V,'^','.^');
-V = replace(V,'x(1)','x');
-V = replace(V,'x(2)','y');
-V = eval(['@(x,y)' V]);
-traj_plot = feval(V,x,y);
-%subplot(2,1,1);
-fsurf(V)
-hold on
-for i = 1:trajNum
-    plot3(x(i,:),y(i,:),traj_plot(i,:),'-*');
-end
-title('Proposed Lyapunov Function (V)')
-xlabel("x")
-ylabel("y")
-zlabel("V")
-
-% ** Uncomment if you want to see V_dot
-% neg_V_dot = replace(neg_V_dot,'*','.*');
-% neg_V_dot = replace(neg_V_dot,'^','.^');
-% neg_V_dot = replace(neg_V_dot,'x(1)','x');
-% neg_V_dot = replace(neg_V_dot,'x(2)','y');
-% neg_V_dot = eval(['@(x,y)' neg_V_dot]);
-% subplot(2,1,2);
-% fsurf(neg_V_dot)
-% title('Vdot')
-% xlabel("x")
-% ylabel("y")
-% zlabel("Vdot")
-end
-
 function [V,neg_V_dot] = sosFun(f,x,n)
 % Generates a polynomial with degree n
 % V is polynomial
@@ -148,6 +115,39 @@ V = sdisplay(V);
 V = V{1}
 neg_V_dot = sdisplay(replace(neg_V_dot,Vc,value(Vc)));
 neg_V_dot = neg_V_dot{1};
+end
+
+function plotFun(V, neg_V_dot)
+[x,y,trajNum] = trajFinder();
+V = replace(V,'*','.*');
+V = replace(V,'^','.^');
+V = replace(V,'x(1)','x');
+V = replace(V,'x(2)','y');
+V = eval(['@(x,y)' V]);
+traj_plot = feval(V,x,y);
+%subplot(2,1,1);
+fsurf(V)
+hold on
+for i = 1:trajNum
+    plot3(x(i,:),y(i,:),traj_plot(i,:),'-*');
+end
+title('Proposed Lyapunov Function (V)')
+xlabel("x")
+ylabel("y")
+zlabel("V")
+
+% ** Uncomment if you want to see V_dot
+% neg_V_dot = replace(neg_V_dot,'*','.*');
+% neg_V_dot = replace(neg_V_dot,'^','.^');
+% neg_V_dot = replace(neg_V_dot,'x(1)','x');
+% neg_V_dot = replace(neg_V_dot,'x(2)','y');
+% neg_V_dot = eval(['@(x,y)' neg_V_dot]);
+% subplot(2,1,2);
+% fsurf(neg_V_dot)
+% title('Vdot')
+% xlabel("x")
+% ylabel("y")
+% zlabel("Vdot")
 end
 
 % Retrieves x and y coordinates of drawn trajectories in order to plot onto
