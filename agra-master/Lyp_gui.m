@@ -1,17 +1,13 @@
-function Lyp_gui(f,V,nVar,nEqn)
+function Lyp_gui(f_in,V_in,nVar,nEqn)
 delete trajData.txt
-fprintf("Please re-enter the system questions and V.");
-f
-V
 
 x=mpolyfun.singles(nVar);
-f=[];
+f =[];
 for i = 1 : nEqn
-    fprintf("(Eqn #%d) ",i);
-    f = [f;(input('Enter eqn: '))];
+    f = [f;eval(f_in{i})];
 end
 
-V = input('Enter V: ');
+V = eval(V_in);
 
 sos=agrasys(f,V);
 sos.max_level();
