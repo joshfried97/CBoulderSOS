@@ -147,7 +147,6 @@ sos_gui.window();
 end
 
 function plotFun(V, neg_V_dot)
-
 V = replace(V,'*','.*');
 V = replace(V,'^','.^');
 V = replace(V,'x(1)','x');
@@ -157,6 +156,7 @@ V = eval(['@(x,y)' V]);
 fsurf(V)
 hold on
 
+% Adds trajectories onto 3D plot
 [x,y,trajNum] = trajFinder();
 traj_plot = feval(V,x,y);
 for i = 1:trajNum
@@ -164,6 +164,7 @@ for i = 1:trajNum
 end
 hold on
 
+% Adds ROA onto 3D plot
 [map, xticks, yticks] = roaFinder();
 roa = [];
 m=length(yticks);
@@ -172,7 +173,7 @@ for i=2:m-1
     for j=2:n-1
         if map(i,j)
             plot3(xticks(j),yticks(i),feval(V,xticks(j),yticks(i)),...
-                'o', 'MarkerSize',8, 'Color', 'g');
+                'o', 'MarkerSize',8, 'Color', 'g', 'LineWidth', 2);
         end
     end
 end
