@@ -109,7 +109,7 @@ classdef agragui < handle
          end
 
          function show_ROA(sys)
-         % Draws cross-section of ROA computed by numerical simulation
+             % Draws cross-section of ROA computed by numerical simulation
              global agra_f;agra_f=sys.main.f;
              
              color='g';
@@ -118,34 +118,45 @@ classdef agragui < handle
              m=length(yticks);
              n=length(xticks);
              for i=2:m-1
-                  for j=2:n-1
-                      if map(i,j)
-                        plot(xticks(j),yticks(i),[color 'o'],'LineWidth',2,...
-                         'MarkerEdgeColor',color,...
-                         'MarkerFaceColor',color,...
-                         'MarkerSize',10);
-                      end
-                  end
-            end
+                 for j=2:n-1
+                     if map(i,j)
+                         plot(xticks(j),yticks(i),[color 'o'],'LineWidth',2,...
+                             'MarkerEdgeColor',color,...
+                             'MarkerFaceColor',color,...
+                             'MarkerSize',10);
+                     end
+                 end
+             end
+             
+             %% Added by Josh Fried Sep 20
+             % Add roa data to file in same dir
+             fileID = fopen('roaData.txt','a');
+             fprintf(fileID,'%f\n',size(map));
+             fprintf(fileID,'%f\n',size(xticks,2));
+             fprintf(fileID,'%f\n',size(yticks,2));
+             fprintf(fileID,'%f\n',map);
+             fprintf(fileID,'%f\n',xticks);
+             fprintf(fileID,'%f\n',yticks);
+             fclose(fileID);
          end
          
          function show_trajectory(sys)
-         % Pick initial conditions on the plane and plot a trajectory
-         global agra_f; agra_f=sys.main.f;
-         
-               [x_1,x_2]=ginput(1);
-               [x,y]=traj(sys,x_1,x_2);plot(x,y,'b');
-               
-               %% Added by Josh Fried Sep 20
-               % Add trajectory data to file in same dir
-               endX = 100; % Indicates end of X data
-               endY = 101; % Indicates end of Y data
-               fileID = fopen('trajData.txt','a');
-               fprintf(fileID,'%f\n',x);
-               fprintf(fileID,'%d\n',endX);
-               fprintf(fileID,'%f\n',y);
-               fprintf(fileID,'%d\n',endY);
-               fclose(fileID);
+             % Pick initial conditions on the plane and plot a trajectory
+             global agra_f; agra_f=sys.main.f;
+             
+             [x_1,x_2]=ginput(1);
+             [x,y]=traj(sys,x_1,x_2);plot(x,y,'b');
+             
+             %% Added by Josh Fried Sep 20
+             % Add trajectory data to file in same dir
+             endX = 100; % Indicates end of X data
+             endY = 101; % Indicates end of Y data
+             fileID = fopen('trajData.txt','a');
+             fprintf(fileID,'%f\n',x);
+             fprintf(fileID,'%d\n',endX);
+             fprintf(fileID,'%f\n',y);
+             fprintf(fileID,'%d\n',endY);
+             fclose(fileID);
                
          end
          

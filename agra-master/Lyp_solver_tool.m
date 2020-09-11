@@ -4,6 +4,7 @@ clc
 clear all
 close all
 fopen('trajData.txt','w');
+fopen('roaData.txt','w');
 fclose('all');
 
 disp("Lyapunov Function Solver Utilising SOS");
@@ -119,6 +120,7 @@ end
 
 function Lyp_gui(f_in,V_in,nVar,nEqn)
 delete trajData.txt
+delete roaData.txt
 
 x=mpolyfun.singles(nVar);
 f =[];
@@ -145,19 +147,36 @@ sos_gui.window();
 end
 
 function plotFun(V, neg_V_dot)
-[x,y,trajNum] = trajFinder();
+
 V = replace(V,'*','.*');
 V = replace(V,'^','.^');
 V = replace(V,'x(1)','x');
 V = replace(V,'x(2)','y');
 V = eval(['@(x,y)' V]);
-traj_plot = feval(V,x,y);
 %subplot(2,1,1);
 fsurf(V)
 hold on
+
+[x,y,trajNum] = trajFinder();
+traj_plot = feval(V,x,y);
 for i = 1:trajNum
     plot3(x(i,:),y(i,:),traj_plot(i,:),'-*');
 end
+hold on
+
+[map, xticks, yticks] = roaFinder();
+roa = [];
+m=length(yticks);
+n=length(xticks);
+for i=2:m-1
+    for j=2:n-1
+        if map(i,j)
+            plot3(xticks(j),yticks(i),feval(V,xticks(j),yticks(i)),...
+                'o', 'MarkerSize',8, 'Color', 'g');
+        end
+    end
+end
+
 title('Proposed Lyapunov Function (V)')
 xlabel("x")
 ylabel("y")
@@ -225,4 +244,30 @@ for d = 1:length(data)
         end
     end
 end
+end
+
+function [map, xticks, yticks] = roaFinder()
+fileID = fopen('roaData.txt', 'r');
+formatSpec = '%f';
+data = fscanf(fileID, formatSpec);
+
+% 1st 4 rows contain # elements in all structures
+mapRow = data(1);
+mapCol = data(2);
+xlen = data(3);
+ylen = data(4);
+
+% Storing index points for each different data structure
+mapEnd = mapRow*mapCol + 4;
+xBegin = mapEnd + 1;
+xEnd = xBegin + xlen - 1;
+yBegin = xEnd + 1;
+yEnd = yBegin + ylen - 1;
+
+% Creating structures to store read data
+map = data(5:mapEnd);
+xticks = data(xBegin:xEnd);
+yticks = data(yBegin:yEnd);
+
+map = reshape(map, [mapRow, mapCol]);
 end
