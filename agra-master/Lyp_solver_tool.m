@@ -99,7 +99,7 @@ neg_V_dot = -1*gradV*f;
 % Creates sos instance for both V and -V_dot
 F = [Vc(1) == 0;sos(V-zeta*boundFun^2);sos(neg_V_dot)];
 
-% Turning on pre & post processing to reduce computational load
+% Turning on pre-processing to reduce computational load
 options = sdpsettings('sos.newton',1,'sos.congruence',1);
 
 % Calculates V s.t V and -V_dot are sos
