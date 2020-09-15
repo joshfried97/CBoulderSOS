@@ -121,13 +121,16 @@ end
 function Lyp_gui(f_in,V_in,nVar,nEqn)
 delete trajData.txt
 delete roaData.txt
+delete mDimRoaData.txt
 
 x=mpolyfun.singles(nVar);
 f =[];
 for i = 1 : nEqn
+    % Converts f into form that AGRA can read
     f = [f;eval(f_in{i})];
 end
 
+% Converts V into form that AGRA can read
 V = eval(V_in);
 
 sos=agrasys(f,V);
@@ -136,6 +139,25 @@ sos.max_level();
 sos_gui=agragui(sos);
 sos_gui.set_simulation(30,0.05);
 
+% Calculate all var pairings
+varCombo = combnk(1:nVar,2);
+
+mapStore = [];%josh is lame
+
+% Storing ROA for each var pair
+if (input('Do you want to store ROA for each var pair? (1 - Yes, 0 - No): '))
+    for m = 1 : size(varCombo,1)
+        fprintf("Calculating ROA for variable pair #%d out of %d\n", m, size(varCombo,1));
+        i = varCombo(m,1);
+        j = varCombo(m,2);
+        sos_gui.set_plane(i,j,[-5 5],[-5 5]);
+        
+        fprintf("ROA for x%d and x%d\n", i, j);
+        sos_gui.store_mdim_ROA()
+    end
+end
+
+% Gives usr choice of which 2 variables to plot if sys has > 2
 if nVar > 2
     answer = inputdlg({'Enter number of 1st var (i.e 1 for x1):','Enter 2nd var:'}, 'Plotting Variables', [1 50]);
     i = str2num(answer{1});
@@ -143,6 +165,7 @@ if nVar > 2
     sos_gui.set_plane(i,j,[-5 5],[-5 5]);
 end
 
+% Starts up the GUI window
 sos_gui.window();
 end
 

@@ -140,6 +140,26 @@ classdef agragui < handle
              fclose(fileID);
          end
          
+         function [map] = store_mdim_ROA(sys)
+             % Draws cross-section of ROA computed by numerical simulation
+             global agra_f;agra_f=sys.main.f;
+             
+             [map,xticks,yticks]=Build_ROA(sys);
+             
+             % Add roa data to file in same dir
+             fileID = fopen('mDimRoaData.txt','a');
+             fprintf(fileID,'x%d\n',sys.x_i);
+             fprintf(fileID,'x%d\n',sys.y_i);
+             fprintf(fileID,'%f\n',size(map));
+             fprintf(fileID,'%f\n',size(xticks,2));
+             fprintf(fileID,'%f\n',size(yticks,2));
+             fprintf(fileID,'%f\n',map);
+             fprintf(fileID,'%f\n',xticks);
+             fprintf(fileID,'%f\n',yticks);
+             fprintf(fileID,'\n\n');
+             fclose(fileID);
+         end
+         
          function show_trajectory(sys)
              % Pick initial conditions on the plane and plot a trajectory
              global agra_f; agra_f=sys.main.f;
