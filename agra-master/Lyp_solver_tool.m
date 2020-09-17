@@ -159,9 +159,8 @@ end
 
 % Gives usr choice of which 2 variables to plot if sys has > 2
 if nVar > 2
-    answer = inputdlg({'Enter number of 1st var (i.e 1 for x1):','Enter 2nd var:'}, 'Plotting Variables', [1 50]);
-    i = str2num(answer{1});
-    j = str2num(answer{2});
+    i = input('Enter number of 1st var (i.e 1 for x1): ');
+    j = input('Enter 2nd var: ');
     sos_gui.set_plane(i,j,[-5 5],[-5 5]);
 end
 
