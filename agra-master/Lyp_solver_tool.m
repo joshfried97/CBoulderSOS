@@ -35,13 +35,30 @@ while n <= 0
     disp("Invalid value for n. Value must be positive and non-zero.")
     n = input('Enter starting value for degree of V: ');
 end
+fprintf("\n")
 
-% MATLAB equivalent of do-while loop
+% Ask user for number of constraints
+conNum = input('Enter number of constraints you wish to enter: ');
+
+% Process constraints from user input
+% ** Potential for future development **
+constraints = [];
+if conNum > 0
+    disp("Enter constraints for the system.");
+    disp("For example: sum(x) <= 10, x(1) == 0, 0.5 <= x(2) <= 1.5");
+    for i = 1 : conNum
+        fprintf("(Con #%d) ",i);
+        constraints = [constraints;(input('Enter constraint: '))];
+    end
+end
+fprintf("\n")
+
+% Main loop
 while 1
-  
+    
     % Run solver
     fprintf("Searching for V with degree = %d...\n",n);
-    [V,neg_V_dot] = sosFun(f,x,n);
+    [V,neg_V_dot] = sosFun(f,x,n,constraints);
     
     % If the solver returns nothing then it's infeasible
     if V == '0'
@@ -63,26 +80,29 @@ while 1
         end
         break;
     end
-        
+    
     % Increase the degree of V by 2
     n = n + 2;
 end
+fprintf("\n")
 
 % Utilising Agra toolbox for plotting ROA
 if (input('Do you want to plot ROA? (1 - Yes, 0 - No): '))
     f = sdisplay(f);
     Lyp_gui(f,V,nVar,nEqn)
 end
+fprintf("\n")
 
 % Plot V and -V_dot if it is plottable
+% ** Potential for future expansion **
 if (nVar <= 2)
-    if (input('Do you want to plot V and -V_dot? (1 - Yes, 0 - No): ')) 
-       plotFun(V, neg_V_dot)
+    if (input('Do you want to plot V and -V_dot? (1 - Yes, 0 - No): '))
+        plotFun(V, neg_V_dot)
     end
 end
 
 %% Function Declarations
-function [V,neg_V_dot] = sosFun(f,x,n)
+function [V,neg_V_dot] = sosFun(f,x,n,constraints)
 % Generates a polynomial with degree n
 % V is polynomial
 % Vc stores coefficients of each term
@@ -97,7 +117,7 @@ gradV = jacobian(V,x);
 neg_V_dot = -1*gradV*f;
 
 % Creates sos instance for both V and -V_dot
-F = [Vc(1) == 0;sos(V-zeta*boundFun^2);sos(neg_V_dot)];
+F = [constraints;Vc(1) == 0;sos(V-zeta*boundFun^2);sos(neg_V_dot)];
 
 % Turning on pre-processing to reduce computational load
 options = sdpsettings('sos.newton',1,'sos.congruence',1);
@@ -141,8 +161,6 @@ sos_gui.set_simulation(30,0.05);
 
 % Calculate all var pairings
 varCombo = combnk(1:nVar,2);
-
-mapStore = [];%josh is lame
 
 % Storing ROA for each var pair
 if (input('Do you want to store ROA for each var pair? (1 - Yes, 0 - No): '))
